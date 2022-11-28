@@ -1,0 +1,32 @@
+
+
+.btn :hover{
+    color:black;
+
+    text-decoration:black;
+    outline: black;
+    
+}
+.btn {
+    border: none; /* Remove borders */
+    color: black; /* Add a text color */
+    padding: 14px 28px; /* Add some padding */
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+  }
+
+div.blocktext {
+    height: 10em;
+    position: relative }
+div.blocktext h1 img {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
+
+    
+
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+}
