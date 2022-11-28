@@ -7,6 +7,14 @@
     outline: black;
     
 }
+
+.center {
+    border: 5px solid;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+
 .btn {
     border: none; /* Remove borders */
     color: black; /* Add a text color */
@@ -15,15 +23,13 @@
   }
 
 div.blocktext {
-    height: 10em;
-    position: relative }
-div.blocktext h1 img {
-    margin: 0;
-    position: absolute;
-    top: 50%;
+    position: fixed;
     left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%) }
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    }
+
 
     
 
