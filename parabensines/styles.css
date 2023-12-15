@@ -1,0 +1,83 @@
+/* Style the birthday message */
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('OpenDyslexic.woff') format('woff'); /* Formato WOFF */
+    /* Adicione mais formatos se necessário (eot, ttf, svg) */
+  }
+
+  body {
+    font-family: 'OpenDyslexic', sans-serif; /* Use OpenDyslexic como fonte principal e sans-serif como backup */
+    background-color: #121212; /* Cor de fundo mais escura */
+    color: white; /* Cor do texto */
+    font-family: 'OpenDyslexic', sans-serif; /* Fonte */
+    text-align: justify; /* Justificar texto */
+    padding: 20px; /* Espaçamento interno para melhor legibilidade */  
+}
+
+.birthday-message {
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* Style the slideshow container */
+.slideshow-container {
+    max-width: 800px;
+    height: 400px; /* Set a fixed height for the container */
+    overflow: hidden; /* Hide overflowing content */
+    margin: auto;
+    position: relative;
+  }
+  
+  /* Style the images within the slideshow */
+  .mySlides {
+    width: 100%; /* Set the slide width to 100% of the container */
+    height: 100%; /* Set the slide height to 100% of the container */
+    object-fit: contain; /* Ensure entire image is visible within the container */
+  }
+  
+  .mySlides img {
+    width: 100%; /* Set the image width to 100% of the slide */
+    height: 100%; /* Set the image height to 100% of the slide */
+    object-fit: contain; /* Ensure entire image is visible within the slide */
+    display: block;
+    margin: 0 auto; /* Center images horizontally */
+  }
+  
+
+/* Style the navigation buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+.prev {
+  left: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* Add animation for fading images */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
