@@ -13,6 +13,7 @@
     font-family: 'OpenDyslexic', sans-serif; /* Fonte */
     text-align: justify; /* Justificar texto */
     padding: 20px; /* Espaçamento interno para melhor legibilidade */  
+    font-size: 25px;
 }
 
 .birthday-message {
