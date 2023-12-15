@@ -15,7 +15,19 @@
     padding: 20px; /* Espaçamento interno para melhor legibilidade */  
     font-size: 25px;
 }
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 22px; /* Reduzir o tamanho da fonte para dispositivos médios */
+        padding: 15px; /* Ajustar o espaçamento interno */
+    }
+}
 
+@media screen and (max-width: 480px) {
+    body {
+        font-size: 20px; /* Reduzir mais o tamanho da fonte para dispositivos menores */
+        padding: 10px; /* Ajustar o espaçamento interno */
+    }
+}
 .birthday-message {
   text-align: center;
   margin-top: 50px;
