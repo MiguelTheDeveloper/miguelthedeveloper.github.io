@@ -1,20 +1,46 @@
 /* Reset CSS */
+@font-face {
+    font-family: 'SurfingCapital';
+    src: url('SurfingCapital.woff') format('woff'); /* Formato WOFF */
+    /* Adicione mais formatos se necessário (eot, ttf, svg) */
+  }
+
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 }
+
 html,
 body {
-	background: linear-gradient(45deg, #fffb00, #ff6600);
+	background-color: wheat;
 	padding: 15px;
+	color: #552ee0;
 }
+h1{
+	box-sizing: border-box;
+	
+}
+video,
 img {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 5px; /* Adjust border-radius as needed */
-  object-fit: cover;
+  object-fit: fill;
+}
+
+
+
+img.logo {
+	
+  width: 50%;
+  height: auto;
+  display: block;
+  border-radius: 5px; /* Adjust border-radius as needed */
+  object-fit: fill;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Main CSS */

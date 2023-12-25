@@ -32,7 +32,7 @@ fs.readdir(folderPath, (err, files) => {
     }
   });
 
-  const output = `const memories = ${JSON.stringify(memories, null, 2)};\n\nmodule.exports = memories;`;
+  const output = `export const memories = ${JSON.stringify(memories, null, 2)};\n\nmodule.exports = memories;`;
 
   fs.writeFile('memories.js', output, err => {
     if (err) {

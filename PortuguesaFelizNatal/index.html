@@ -6,43 +6,13 @@
   <title>Galeria de Memórias</title>
 
   <link rel="stylesheet" href="styles.css">
-  <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
-/>
+
 </head>
 
 <body>
-  <h1>Galeria de Memórias</h1>
-  <div class="grid-wrapper" id="gallery"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-  <script src="memories.js" type="module"></script>
-  <script src="scripts.js" type="module"></script>
-
-  <script type="module">
-    
-    import {
-      memories
-    } from './memories.js';
-    import {
-      createMemoryElement
-    } from './scripts.js';
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const gallery = document.getElementById("gallery");
-
-      memories.forEach(memory => {
-        const memoryElement = createMemoryElement(memory);
-        gallery.appendChild(memoryElement);
-      });
+  <img src="logo.png" alt="logo" class="logo" height="50px" width="50px">
 
 
-
-
-    });
-  </script>
-  
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+
 </html>
