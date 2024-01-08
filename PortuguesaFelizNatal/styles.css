@@ -11,6 +11,41 @@
 	box-sizing: border-box;
 }
 
+
+.container {
+	height: 2000px; /* Adjust height based on your website content */
+	position: relative;
+  }
+  
+  .heart {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background-color: #ff0000; /* Heart color */
+	clip-path: polygon(
+	  50% 15%,
+	  80% 80%,
+	  50% 100%,
+	  20% 80%,
+	  50% 15%
+	);
+	animation: heart 1.5s ease-in-out infinite;
+	pointer-events: none;
+  }
+  
+  @keyframes heart {
+	0% {
+	  opacity: 1;
+	  transform: scale(1);
+	}
+	100% {
+	  opacity: 0;
+	  transform: scale(1.5);
+	}
+  }
+
+
+
 html,
 body {
 	background-color: wheat;
