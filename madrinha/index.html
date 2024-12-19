@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido de Amadrinhamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="password"] {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(100% - 22px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="auth">
+            <h2>Autenticação</h2>
+            <input type="password" id="password" placeholder="Digite a senha">
+            <button onclick="checkPassword()">Entrar</button>
+        </div>
+
+        <div id="content" class="hidden">
+            <h2>Pedido de Amadrinhamento</h2>
+            Olá, Doutora Chuckie,
+            Gostava de, (in)formalmente, fazer um pedido de amadrinhamento. Pode parecer um pouco inesperado, mas gostava mesmo que fosse minha madrinha. Como sabe, esperei muito tempo até pedir uma madrinha para ter a certeza de que não era uma escolha feita ao acaso.
+            
+            Acho que o que me fez decidir foi perceber que, apesar de ser uma pessoa muito séria na praxe, é muito mais do que isso em vários momentos.
+            
+            Na dormida, quando faltei ao respeito, fiquei realmente chateado comigo mesmo porque é uma doutora que respeito muito e que aceita a galhofa (o que é uma característica essencial para ser minha madrinha). Esse episódio fez-me perceber ainda mais o respeito que tenho por si.
+            
+            E hoje, mais do que em qualquer outro dia, percebi que tem mesmo amor pela praxe e gosta verdadeiramente do que faz. Gosto de pessoas que colocam sangue, suor e lágrimas no que fazem e que, mesmo no meio de tanta galhofa, levam isto a sério.
+            <div>
+                <button onclick="sendResponse('sim')">Sim</button>
+                <button onclick="sendResponse('nao')">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PASSWORD = "esumhelicoptero"; // Substitua pela senha desejada
+
+        function checkPassword() {
+            const input = document.getElementById("password").value;
+            if (input === PASSWORD) {
+                document.getElementById("auth").classList.add("hidden");
+                document.getElementById("content").classList.remove("hidden");
+            } else {
+                alert("Senha não TáCerta!");
+            }
+        }
+
+        function sendResponse(response) {
+            const endpoint = "http://localhost:2334"; // Substitua pelo seu IP
+
+
+            fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    resposta: response,
+                })
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Resposta enviada com sucesso!");
+                } else {
+                    alert("Erro ao enviar a resposta.");
+                }
+            })
+            .catch(err => {
+                console.error("Erro:", err);
+                alert("Não foi possível enviar a resposta.");
+            });
+        }
+    </script>
+</body>
+</html>
