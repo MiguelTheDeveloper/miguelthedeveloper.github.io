@@ -1,4 +1,7 @@
 @echo off
+rem Define a página de código para UTF-8 (moderno, suporta todos os caracteres)
+chcp 65001 >nul
+
 :inicio
 set /p nome_pasta="Digite o nome da pasta principal (ex: Matemática, Programação): "
 
