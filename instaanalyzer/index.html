@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta Analyzer | Neural</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #0095f6;
+            --accent-hover: #0074cc;
+            --danger: #ed4956;
+            --success: #00c853;
+            --border: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            transition: height 0.3s ease;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        p.subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 2rem; }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            background: #252525;
+            padding: 2.5rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .upload-area:hover, .upload-area.drag-over { border-color: var(--accent); background: #2a2a2a; transform: scale(1.01); }
+        .upload-area p { margin: 0; font-weight: 500; color: var(--text-primary); pointer-events: none; }
+        
+        input[type="file"] { display: none; }
+
+        /* Link dos Logs */
+        .log-toggle {
+            color: #555;
+            font-size: 0.8rem;
+            text-decoration: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: color 0.2s;
+        }
+        .log-toggle:hover { color: #888; text-decoration: underline; }
+
+        /* Consola Colapsável */
+        #debug-console {
+            width: 90%;
+            margin: 0 auto 20px auto;
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            display: none; /* Escondido por defeito */
+        }
+        .log-line { border-bottom: 1px solid #111; padding: 2px 0; }
+        .log-error { color: #ff3333; font-weight: bold; }
+        .log-success { color: #00ff00; font-weight: bold; }
+        .log-info { color: #888; }
+
+        /* Stats e Resultados */
+        .stats-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        .stat { background: #252525; padding: 15px; border-radius: 10px; border: 1px solid var(--border); }
+        .stat span { display: block; font-size: 1.4rem; font-weight: bold; color: var(--text-primary); margin-bottom: 5px; }
+        .stat label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+        .results-container { width: 100%; text-align: left; display: none; opacity: 0; animation: fadeIn 0.5s forwards 0.2s; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9rem; }
+        
+        .list-box {
+            background: #181818;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        /* Scrollbar */
+        .list-box::-webkit-scrollbar { width: 6px; }
+        .list-box::-webkit-scrollbar-track { background: #181818; }
+        .list-box::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        .user-item { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid #2a2a2a; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .user-item:hover { background: #222; }
+        .user-item span { color: var(--danger); font-weight: 500; }
+        .user-item a { color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; border: 1px solid #333; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; }
+        .user-item a:hover { border-color: var(--text-primary); color: var(--text-primary); }
+        
+        button#downloadBtn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px 0;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background 0.3s, transform 0.2s;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 149, 246, 0.3);
+        }
+        button#downloadBtn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
+
+        .footer { margin-top: 2rem; font-size: 0.75rem; color: #444; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Insta Analyzer</h1>
+    <p class="subtitle">Descobre quem não te segue de volta</p>
+    
+    <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <p id="fileName">Carregar Ficheiro ZIP</p>
+        <input type="file" id="fileInput" accept=".zip">
+    </div>
+
+    <a id="toggleLogs" class="log-toggle">Ver logs do sistema</a>
+
+    <div id="debug-console"></div>
+
+    <div class="stats-box" id="statsBox">
+        <div class="stat"><span id="countFollowing">0</span><label>A Seguir</label></div>
+        <div class="stat"><span id="countFollowers">0</span><label>Seguidores</label></div>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <div class="results-header">
+            <span>Não te seguem de volta</span>
+            <span id="countTraitor" style="color:var(--danger); font-weight:bold;">0</span>
+        </div>
+        <div class="list-box" id="resultsList"></div>
+    </div>
+    
+    <button id="downloadBtn">Descarregar Lista (.txt)</button>
+
+    <div class="footer">Script by Neural</div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+    const debugConsole = document.getElementById('debug-console');
+    const toggleLogsBtn = document.getElementById('toggleLogs');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsList = document.getElementById('resultsList');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statsBox = document.getElementById('statsBox');
+
+    // --- Lógica de Toggle dos Logs ---
+    toggleLogsBtn.addEventListener('click', () => {
+        if (debugConsole.style.display === 'none' || debugConsole.style.display === '') {
+            debugConsole.style.display = 'block';
+            toggleLogsBtn.innerText = 'Ocultar logs do sistema';
+        } else {
+            debugConsole.style.display = 'none';
+            toggleLogsBtn.innerText = 'Ver logs do sistema';
+        }
+    });
+
+    function log(message, type = 'info') {
+        const line = document.createElement('div');
+        line.className = `log-line log-${type}`;
+        line.innerText = `> ${message}`;
+        debugConsole.appendChild(line);
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+    }
+
+    // --- Drag & Drop ---
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+    });
+    ['dragenter', 'dragover'].forEach(eventName => dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false));
+    ['dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false));
+
+    dropZone.addEventListener('drop', e => processFile(e.dataTransfer.files[0]));
+    fileInput.addEventListener('change', e => processFile(e.target.files[0]));
+
+    // --- Processamento (Com a Lógica Robusta) ---
+    async function processFile(file) {
+        if (!file) return;
+
+        // Reset UI
+        fileNameDisplay.innerText = file.name;
+        debugConsole.innerHTML = '<div style="color:#666; margin-bottom:5px">--- Início do Processo ---</div>';
+        resultsContainer.style.display = 'none';
+        statsBox.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        
+        log(`Ficheiro carregado: ${file.name}`);
+
+        try {
+            const zip = await JSZip.loadAsync(file);
+            let followers = new Set();
+            let following = [];
+            const promises = [];
+
+            log("A analisar estrutura do ZIP...");
+
+            zip.forEach((relativePath, zipEntry) => {
+                const fileName = relativePath.split('/').pop().toLowerCase();
+
+                // Procura following.json
+                if (fileName === 'following.json') {
+                    log(`Ficheiro encontrado: ${fileName}`, 'success');
+                    promises.push(zipEntry.async('string').then(c => {
+                        const list = extractUsernames(c, 'following');
+                        following.push(...list);
+                    }));
+                }
+                // Procura followers_*.json
+                else if (fileName.startsWith('followers_') && fileName.endsWith('.json')) {
+                    log(`Ficheiro encontrado: ${fileName}`, 'success');
+                    promises.push(zipEntry.async('string').then(c => {
+                        const list = extractUsernames(c, 'followers');
+                        list.forEach(u => followers.add(u));
+                    }));
+                }
+            });
+
+            await Promise.all(promises);
+
+            // Remover duplicados da lista de following
+            following = [...new Set(following)];
+
+            // Logs de contagem
+            log(`Total A Seguir: ${following.length}`, following.length > 0 ? 'info' : 'error');
+            log(`Total Seguidores: ${followers.size}`, followers.size > 0 ? 'info' : 'error');
+
+            // Validações
+            if (following.length === 0) throw new Error("Lista 'A Seguir' (following) está vazia ou não foi encontrada.");
+            if (followers.size === 0) throw new Error("Lista 'Seguidores' vazia ou não encontrada.");
+
+            // O Cálculo Final
+            const traidores = following.filter(user => !followers.has(user));
+            log(`Análise concluída: ${traidores.length} não seguem de volta.`, 'success');
+            
+            updateUI(following.length, followers.size, traidores);
+
+        } catch (err) {
+            log(`ERRO: ${err.message}`, 'error');
+            // Se der erro, abre os logs automaticamente para o utilizador ver
+            debugConsole.style.display = 'block';
+            toggleLogsBtn.innerText = 'Ocultar logs do sistema';
+        }
+    }
+
+    // A FUNÇÃO MÁGICA (Com a correção do Title)
+    function extractUsernames(jsonString, context) {
+        try {
+            const data = JSON.parse(jsonString);
+            let rawItems = [];
+
+            // Tenta encontrar o array onde quer que ele esteja
+            if (Array.isArray(data)) rawItems = data;
+            else if (data.relationships_following) rawItems = data.relationships_following;
+            else if (data.relationships_followers) rawItems = data.relationships_followers;
+            else {
+                const key = Object.keys(data).find(k => Array.isArray(data[k]));
+                if (key) rawItems = data[key];
+            }
+
+            if (!rawItems) return [];
+
+            return rawItems.map(item => {
+                let u = null;
+                
+                // 1. Tenta extrair do campo value (padrão followers)
+                if (item.string_list_data && item.string_list_data[0] && item.string_list_data[0].value) {
+                    u = item.string_list_data[0].value;
+                } 
+                
+                // 2. FALLBACK CRUCIAL: Se falhar, usa o Title (padrão following do teu ficheiro)
+                if (!u && item.title) {
+                    u = item.title;
+                }
+                
+                return u ? u.trim().toLowerCase() : null;
+            }).filter(u => u !== null);
+        } catch (e) {
+            log(`Erro JSON: ${e.message}`, 'error');
+            return [];
+        }
+    }
+
+    function updateUI(followingCount, followersCount, list) {
+        document.getElementById('countFollowing').innerText = followingCount;
+        document.getElementById('countFollowers').innerText = followersCount;
+        document.getElementById('countTraitor').innerText = list.length;
+        
+        statsBox.style.display = 'grid';
+        resultsList.innerHTML = '';
+        resultsContainer.style.display = 'block';
+
+        if(list.length === 0) {
+            resultsList.innerHTML = '<div style="padding:30px; text-align:center; color:var(--success);">🎉 Incrível! Todos te seguem de volta.</div>';
+            return;
+        }
+
+        downloadBtn.style.display = 'block';
+        downloadBtn.onclick = () => {
+             const blob = new Blob([list.join('\n')], { type: 'text/plain' });
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = 'nao_me_seguem.txt';
+             a.click();
+        };
+
+        list.forEach(user => {
+            const div = document.createElement('div');
+            div.className = 'user-item';
+            div.innerHTML = `
+                <span>${user}</span> 
+                <a href="https://instagram.com/${user}" target="_blank">Perfil</a>
+            `;
+            resultsList.appendChild(div);
+        });
+    }
+</script>
+
+</body>
+</html>
